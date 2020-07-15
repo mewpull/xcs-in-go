@@ -1,0 +1,6 @@
+# Binaries
+cmd/cmd
+cmd/xcs-on-multiplexer
+
+# IntelliJ
+.idea
