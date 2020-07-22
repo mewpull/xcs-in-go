@@ -1,8 +1,18 @@
-# eXtended Classifier System in golang #
+# XCS (eXtended Classifier System) in Go #
+
+Development stage:
+```
+    Early thoughts
+--> Prototype/incomplete code
+    Initial working version
+    Solidly tested
+    Release candidate
+    End-user ready
+```
 
 ## Overview ##
 
-This project provides a golang implementation of the XCS (eXtended
+This project provides a Go implementation of the XCS (eXtended
 Classifier System) algorithm as described by Butz and Wilson (2000).
 
 This code should not be used in production without additional testing.
@@ -59,6 +69,12 @@ At the present time, please consult Wilson (1998) and Butz and Wilson
 ## Contributors ##
 
 - Matthew R. Karlsen
+
+## Documentation Note ##
+
+All of the documents for my XCS repositories are based upon a common
+template. For this reason, there may be subsantial overlap between
+documents.
 
 ## References ##
 
