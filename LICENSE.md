@@ -1,7 +1,7 @@
 # Licensing #
 
 Please read this file fully before copying or using the code anywhere.
-Questions can be raised through creation of an 'issue' on GitLab.
+Questions can be raised through creation of an 'issue' on GitHub.
 
 The code written for this project is tri-licensed, under the CC0, MIT
 and Apache 2.0 licenses.
