@@ -92,7 +92,7 @@ incompatible license.
 
 ## Documentation Note ##
 
-All of the documents for my XCS repositories are based upon a common
+All of the documents for the XCS repositories are based upon a common
 template. For this reason, there may be subsantial overlap between
 documents.
 
