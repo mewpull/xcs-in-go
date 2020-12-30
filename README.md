@@ -50,7 +50,7 @@ At the present time, please consult Wilson (1998) and Butz and Wilson
 
 ## Build Instructions ##
 
-- Make sure golang is installed (version 1.11 was used here)
+- Make sure Go is installed (version 1.11 was used here)
 - Navigate to the project directory
 - Navigate to the `./cmd` sub-directory
 - Run `go clean` then `go build -o xcs-on-multiplexer .`
