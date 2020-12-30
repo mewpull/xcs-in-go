@@ -93,7 +93,7 @@ incompatible license.
 ## Documentation Note ##
 
 All of the documents for the XCS repositories are based upon a common
-template. For this reason, there may be subsantial overlap between
+template. For this reason, there may be substantial overlap between
 documents.
 
 ## References ##
