@@ -78,10 +78,10 @@ thus can be code reviewed relatively easily).
 Please remember to update the contributors section in the README.md
 with your name as part of your first commit to the project.
 
-Any contributions submitted will be dual-licensed, under the supplied
-MIT and MIT-0 licenses.
+Any contributions submitted will be tri-licensed, under the supplied
+CC0, MIT and Apache 2.0 licenses.
 
-Should you be unable or unwilling to comply with the dual-licensing
+Should you be unable or unwilling to comply with the tri-licensing
 condition above, we are unable to accept your code for the project.
 This particularly applies to code that has previously been licensed
 with an incompatible license (just the Apache 2.0 license, just the MIT
@@ -95,31 +95,6 @@ incompatible license.
 All of the documents for the XCS repositories are based upon a common
 template. For this reason, there may be substantial overlap between
 documents.
-
-## Licensing ##
-
-Please read this file fully before copying or using the code anywhere.
-Questions can be raised through creation of an 'issue' on GitHub.
-
-The code written for this project is dual-licensed, under the MIT
-and MIT-0 licenses.
-
-This means that you can select and use one of these licenses, i.e. MIT
-or MIT-0. You do not have to use both licenses at once.
-
-Clear attribution is strongly preferred.
-
-This project uses additional external packages. The code of these
-external packages is clearly not covered by the above license(s). Each
-package pulled in is subject to its own license.
-
-As explained within the README, this implementation of the XCS
-(eXtended Classifier System) algorithm is based on [Butz, M. V., &
-Wilson, S. W. (2000, September). An algorithmic description of XCS. In
-International Workshop on Learning Classifier Systems (pp. 253-272).
-Springer, Berlin, Heidelberg]. Permission to use the algorithm
-description within the above paper as a base for the present work was
-sought and received from Springer (personal communication, 2020-07-07).
 
 ## References ##
 
