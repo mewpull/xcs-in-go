@@ -107,6 +107,9 @@ or MIT or Apache 2.0. You do not have to use all three licenses at
 once.
 
 Clear attribution is strongly preferred (but not enforced by CC0).
+Similarly, please acknowledge the original creator of the algorithm
+(S.W. Wilson), and the authors of the 'algorithmic description' paper
+(M.V. Butz and S.W. Wilson) in derivative works.
 
 This project uses additional external packages. The code of these
 external packages is clearly not covered by the above license(s). Each
