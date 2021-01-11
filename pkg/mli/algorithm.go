@@ -3,5 +3,5 @@
 package mli
 
 type Algorithm interface {
-    OperateOn(problem Problem)
+	OperateOn(problem Problem)
 }

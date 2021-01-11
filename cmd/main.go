@@ -3,13 +3,13 @@
 package main
 
 import (
-    "../pkg/xcs"
-    "../pkg/multiplexer"
-    "../pkg/mli"
+	"github.com/matthewrkarlsen/xcs-in-go/pkg/mli"
+	"github.com/matthewrkarlsen/xcs-in-go/pkg/multiplexer"
+	"github.com/matthewrkarlsen/xcs-in-go/pkg/xcs"
 )
 
 func main() {
-    var prob mli.Problem = multiplexer.New(6)
-    var alg mli.Algorithm = &xcs.Xcs{}
-    alg.OperateOn(prob)
+	var prob mli.Problem = multiplexer.New(6)
+	var alg mli.Algorithm = &xcs.Xcs{}
+	alg.OperateOn(prob)
 }
