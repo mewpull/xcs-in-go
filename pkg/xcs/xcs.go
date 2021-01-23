@@ -381,7 +381,7 @@ func (x *Xcs) CreatePredictionArray(matchSet *list.List) map[int]float64 {
 	}
 	var pa = make(map[int]float64, len(actionSet))
 	var fsa = make(map[int]float64, len(actionSet))
-	for k, _ := range actionSet {
+	for k := range actionSet {
 		fsa[k] = 0.0
 	}
 	for e := matchSet.Front(); e != nil; e = e.Next() {
@@ -395,7 +395,7 @@ func (x *Xcs) CreatePredictionArray(matchSet *list.List) map[int]float64 {
 		}
 		fsa[a] = fsa[a] + cl.GetFitness()
 	}
-	for a, _ := range actionSet {
+	for a := range actionSet {
 		if fsa[a] > 0.0 {
 			pa[a] = pa[a] / fsa[a]
 		}
@@ -529,7 +529,7 @@ func (x *Xcs) OperateOn(problem mli.Problem) {
 			var paRandomIdx = rand.Intn(len(predictionArray))
 			var idx = 0
 			var bestAction = 0
-			for k, _ := range predictionArray {
+			for k := range predictionArray {
 				if idx == paRandomIdx {
 					bestAction = k
 					break
