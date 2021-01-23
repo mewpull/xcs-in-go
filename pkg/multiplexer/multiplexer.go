@@ -3,11 +3,9 @@
 package multiplexer
 
 import (
-	"fmt"
+	"log"
 	"math"
 	"math/rand"
-	"os"
-	"strconv"
 
 	"github.com/matthewrkarlsen/xcs-in-go/pkg/mli"
 )
@@ -21,16 +19,15 @@ type Multiplexer struct {
 }
 
 func New(multiplexerSize int) *Multiplexer {
-	var controlBits = -1
+	controlBits := -1
 	for k := 1; k < multiplexerSize; k++ {
-		var maxNum = int(math.Pow(2, float64(k)))
+		maxNum := int(math.Pow(2, float64(k)))
 		if k+maxNum == multiplexerSize {
 			controlBits = k
 		}
 	}
 	if controlBits == -1 {
-		fmt.Println(strconv.Itoa(multiplexerSize) + " bits is not a valid multiplexer")
-		os.Exit(-1)
+		log.Fatalf("%v bits is not a valid multiplexer", multiplexerSize)
 	}
 	return &Multiplexer{multiplexerSize, controlBits, -1, -1, false}
 }
@@ -44,7 +41,7 @@ func (m *Multiplexer) Reset() {
 }
 
 func (m *Multiplexer) ObtainInput() mli.DataItem {
-	var attributes = make([]int, m.MultiplexerSize)
+	attributes := make([]int, m.MultiplexerSize)
 	for j := 0; j < m.MultiplexerSize; j++ {
 		attributes[j] = rand.Intn(2)
 	}
@@ -63,10 +60,10 @@ func (m *Multiplexer) Effect(action int) int {
 func (m *Multiplexer) GetMultiplexerAnswer(attributes []int) int {
 	firstInt := m.ControlBits - 1
 	exp := 0
-	var total = 0
+	total := 0
 	for j := firstInt; j >= 0; j-- {
-		var potentialValueAtByte = int(math.Pow(2, float64(exp)))
-		var binaryValueAtByte = attributes[j]
+		potentialValueAtByte := int(math.Pow(2, float64(exp)))
+		binaryValueAtByte := attributes[j]
 		total += binaryValueAtByte * potentialValueAtByte
 		exp += 1
 	}

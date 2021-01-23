@@ -1,5 +1,3 @@
-// Package multiplexer provides a software implementation of a Boolean
-// multiplexer -- a classic problem for learning classifier systems.
 package multiplexer
 
 import (
@@ -13,13 +11,12 @@ type DataItemImpl struct {
 }
 
 func (d *DataItemImpl) ToString() string {
-
-	var inputs = d.Inputs
-	var builder = strings.Builder{}
+	inputs := d.Inputs
+	builder := strings.Builder{}
 	for i := 0; i < len(inputs); i++ {
 		builder.WriteString(strconv.Itoa(inputs[i]))
 	}
-	var inpStr = builder.String()
+	inpStr := builder.String()
 	return inpStr + " --> " + strconv.Itoa(d.Answer)
 }
 

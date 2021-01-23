@@ -8,43 +8,45 @@ package xcs
 import (
 	"container/list"
 	"fmt"
+	"log"
 	"math"
 	"math/rand"
-	"os"
 	"strconv"
 
 	"github.com/matthewrkarlsen/xcs-in-go/pkg/mli"
 )
 
-var beta float64 = 0.2
-var pHash float64 = 0.33
-var nu float64 = 5.0
-var pExplore float64 = 0.5
-var maxPop int32 = 400
-var doGaSubsumption = true
-var thetaGa int64 = 50
-var chi float64 = 0.8
-var mu float64 = 0.04
-var maxAction int = 1
-var errorZero float64 = 10
-var thetaSub int64 = 20
-var thetaMna int = maxAction + 1
-var epsilon0 float64 = 0.001
-var alpha float64 = 0.1
-var thetaDel int64 = 20
-var delta float64 = 0.1
-var gamma float64 = 0.71
-var actionSetSubsumption = false
-var fitnessI float64 = 0.0
-var initialError float64 = 0.0
+const (
+	beta                 = 0.2
+	pHash                = 0.33
+	nu                   = 5.0
+	pExplore             = 0.5
+	maxPop               = 400
+	doGaSubsumption      = true
+	thetaGa              = 50
+	chi                  = 0.8
+	mu                   = 0.04
+	maxAction            = 1
+	errorZero            = 10
+	thetaSub             = 20
+	thetaMna             = maxAction + 1
+	epsilon0             = 0.001
+	alpha                = 0.1
+	thetaDel             = 20
+	delta                = 0.1
+	gamma                = 0.71
+	actionSetSubsumption = false
+	fitnessI             = 0.0
+	initialError         = 0.0
+)
 
 type Xcs struct {
 }
 
 func (x *Xcs) RuleMatchesState(rule *Classifier, state mli.DataItem) bool {
-	var condition = rule.GetCondition()
-	var inputs = state.GetInputs()
-	var numAttributes = len(inputs)
+	condition := rule.GetCondition()
+	inputs := state.GetInputs()
+	numAttributes := len(inputs)
 	for idx := 0; idx < numAttributes; idx++ {
 		if condition[idx] == "0" {
 			if inputs[idx] != 0 {
@@ -60,9 +62,9 @@ func (x *Xcs) RuleMatchesState(rule *Classifier, state mli.DataItem) bool {
 }
 
 func (x *Xcs) CreateMatchSet(ruleSet *list.List, dataItem mli.DataItem, step int64) *list.List {
-	var matchSet = x.ObtainMatchingClassifiers(ruleSet, dataItem)
+	matchSet := x.ObtainMatchingClassifiers(ruleSet, dataItem)
 	for matchSet.Len() < thetaMna {
-		var cl *Classifier = x.GenerateClassifier(matchSet, dataItem, step)
+		cl := x.GenerateClassifier(matchSet, dataItem, step)
 		ruleSet.PushBack(cl)
 		x.DeleteFromPop(ruleSet)
 		matchSet.PushBack(cl)
@@ -71,7 +73,7 @@ func (x *Xcs) CreateMatchSet(ruleSet *list.List, dataItem mli.DataItem, step int
 }
 
 func (x *Xcs) ObtainMatchingClassifiers(ruleSet *list.List, dataItem mli.DataItem) *list.List {
-	var matchSet = list.New()
+	matchSet := list.New()
 	for r := ruleSet.Front(); r != nil; r = r.Next() {
 		if x.RuleMatchesState(r.Value.(*Classifier), dataItem) {
 			matchSet.PushBack(r.Value.(*Classifier))
@@ -89,8 +91,8 @@ func (x *Xcs) GenerateClassifier(matchSet *list.List, dataItem mli.DataItem, ste
 			condition[i] = strconv.Itoa(attrib)
 		}
 	}
-	var actionsPresent = make(map[int]bool, maxAction-1)
-	var allActions = list.New()
+	actionsPresent := make(map[int]bool, maxAction-1)
+	allActions := list.New()
 	for i := 0; i <= maxAction; i++ {
 		allActions.PushBack(i)
 	}
@@ -99,12 +101,12 @@ func (x *Xcs) GenerateClassifier(matchSet *list.List, dataItem mli.DataItem, ste
 	}
 
 	for e := matchSet.Front(); e != nil; e = e.Next() {
-		var cl = e.Value.(*Classifier)
-		var act = cl.GetAction()
+		cl := e.Value.(*Classifier)
+		act := cl.GetAction()
 		actionsPresent[act] = true
 	}
 
-	var toChooseFrom = list.New()
+	toChooseFrom := list.New()
 	for i := 0; i <= maxAction; i++ {
 		if actionsPresent[i] == false {
 			toChooseFrom.PushBack(i)
@@ -115,9 +117,9 @@ func (x *Xcs) GenerateClassifier(matchSet *list.List, dataItem mli.DataItem, ste
 		toChooseFrom = allActions
 	}
 
-	var randomIdx = rand.Intn(toChooseFrom.Len())
-	var currentIdx = 0
-	var answer = -1
+	randomIdx := rand.Intn(toChooseFrom.Len())
+	currentIdx := 0
+	answer := -1
 	for e := toChooseFrom.Front(); e != nil; e = e.Next() {
 		if currentIdx == randomIdx {
 			answer = e.Value.(int)
@@ -126,45 +128,44 @@ func (x *Xcs) GenerateClassifier(matchSet *list.List, dataItem mli.DataItem, ste
 		currentIdx++
 	}
 	if answer == -1 {
-		fmt.Println("Error. answer == -1.")
-		os.Exit(-1)
+		log.Fatal("Error. answer == -1.")
 	}
 	return &Classifier{condition, answer, 0.0, initialError, initialError, fitnessI, fitnessI, 1, 0, 0, thetaSub, step, nu, make([]int, 80000), thetaDel, delta, errorZero}
 }
 
 func (x *Xcs) CountMicroClassifiers(ruleSet *list.List) int32 {
-	var microPop int32 = 0
+	microPop := int32(0)
 	for e := ruleSet.Front(); e != nil; e = e.Next() {
-		var cls = e.Value.(*Classifier)
+		cls := e.Value.(*Classifier)
 		microPop += cls.GetNumerosity()
 	}
 	return microPop
 }
 
 func (x *Xcs) GetAverageFitnessOfPop(ruleSet *list.List, microPopCount int32) float64 {
-	var fitnessSum = 0.0
+	fitnessSum := 0.0
 	for e := ruleSet.Front(); e != nil; e = e.Next() {
-		var cls = e.Value.(*Classifier)
+		cls := e.Value.(*Classifier)
 		fitnessSum += cls.GetFitness()
 	}
 	return fitnessSum / float64(microPopCount)
 }
 
 func (x *Xcs) DeleteFromPop(ruleSet *list.List) {
-	var microPop = x.CountMicroClassifiers(ruleSet)
+	microPop := x.CountMicroClassifiers(ruleSet)
 	if microPop < maxPop {
 		return
 	}
-	var averageFitnessOfPop float64 = x.GetAverageFitnessOfPop(ruleSet, microPop)
-	var voteSum float64 = 0.0
+	averageFitnessOfPop := x.GetAverageFitnessOfPop(ruleSet, microPop)
+	voteSum := 0.0
 	for e := ruleSet.Front(); e != nil; e = e.Next() {
-		var cls = e.Value.(*Classifier)
+		cls := e.Value.(*Classifier)
 		voteSum += cls.GetDeletionVote(averageFitnessOfPop)
 	}
-	var choicePoint = voteSum * rand.Float64()
+	choicePoint := voteSum * rand.Float64()
 	voteSum = 0.0
 	for e := ruleSet.Front(); e != nil; e = e.Next() {
-		var cl = e.Value.(*Classifier)
+		cl := e.Value.(*Classifier)
 		voteSum += cl.GetDeletionVote(averageFitnessOfPop)
 		if voteSum > choicePoint {
 			if cl.GetNumerosity() > 1 {
@@ -180,7 +181,7 @@ func (x *Xcs) DeleteFromPop(ruleSet *list.List) {
 func (x *Xcs) DoActionSetSubsumption(actionSet *list.List, ruleSet *list.List) {
 	var cl *Classifier
 	for e := actionSet.Front(); e != nil; e = e.Next() {
-		var c = e.Value.(*Classifier)
+		c := e.Value.(*Classifier)
 		if c.CouldSubsume() {
 			if cl == nil || c.GetHashCount() > cl.GetHashCount() || (c.GetHashCount() == cl.GetHashCount() && rand.Float64() > 0.5) {
 				cl = c
@@ -188,10 +189,10 @@ func (x *Xcs) DoActionSetSubsumption(actionSet *list.List, ruleSet *list.List) {
 		}
 	}
 
-	var toDelete = list.New()
+	toDelete := list.New()
 	if cl != nil {
 		for e := actionSet.Front(); e != nil; e = e.Next() {
-			var classifier = e.Value.(*Classifier)
+			classifier := e.Value.(*Classifier)
 			if cl.IsMoreGeneralThan(classifier) {
 				toDelete.PushBack(e)
 			}
@@ -200,17 +201,17 @@ func (x *Xcs) DoActionSetSubsumption(actionSet *list.List, ruleSet *list.List) {
 	for e := toDelete.Front(); e != nil; e = e.Next() {
 		ruleSet.Remove(e)
 		actionSet.Remove(e)
-		var td = e.Value.(*Classifier)
+		td := e.Value.(*Classifier)
 		cl.IncrementNumerosityBy(td.GetNumerosity())
 	}
 }
 
 func (x *Xcs) ApplyMutation(classifier *Classifier, dataItem mli.DataItem) {
-	var condition = classifier.GetCondition()
+	condition := classifier.GetCondition()
 	for k := 0; k < len(condition); k++ {
 		if rand.Float64() < mu {
 			if condition[k] == "#" {
-				var attrib int = dataItem.GetAttribute(k)
+				attrib := dataItem.GetAttribute(k)
 				classifier.SetConditionComponent(k, strconv.Itoa(attrib))
 			} else {
 				classifier.SetConditionComponent(k, "#")
@@ -218,11 +219,11 @@ func (x *Xcs) ApplyMutation(classifier *Classifier, dataItem mli.DataItem) {
 		}
 	}
 	if rand.Float64() < mu {
-		var clAction = classifier.GetAction()
-		var allActions = x.GetSetOfActionsLessSpecified(clAction)
-		var randomIdx = rand.Intn(allActions.Len())
-		var currentIdx = 0
-		var action = -1
+		clAction := classifier.GetAction()
+		allActions := x.GetSetOfActionsLessSpecified(clAction)
+		randomIdx := rand.Intn(allActions.Len())
+		currentIdx := 0
+		action := -1
 		for e := allActions.Front(); e != nil; e = e.Next() {
 			if currentIdx == randomIdx {
 				action = e.Value.(int)
@@ -231,15 +232,14 @@ func (x *Xcs) ApplyMutation(classifier *Classifier, dataItem mli.DataItem) {
 			currentIdx++
 		}
 		if action == -1 {
-			fmt.Println("Error. action == -1.")
-			os.Exit(-1)
+			log.Fatal("Error. action == -1.")
 		}
 		classifier.SetAction(action)
 	}
 }
 
 func (x *Xcs) GetSetOfActionsLessSpecified(action int) *list.List {
-	var allActions = list.New()
+	allActions := list.New()
 	for j := 0; j < thetaMna; j++ {
 		if j != action {
 			allActions.PushBack(j)
@@ -250,7 +250,7 @@ func (x *Xcs) GetSetOfActionsLessSpecified(action int) *list.List {
 
 func (x *Xcs) InsertInPopulation(classifier *Classifier, ruleSet *list.List) {
 	for e := ruleSet.Front(); e != nil; e = e.Next() {
-		var cl = e.Value.(*Classifier)
+		cl := e.Value.(*Classifier)
 		if cl.DoesMatch(classifier) {
 			cl.IncrementNumerosity()
 			return
@@ -260,34 +260,34 @@ func (x *Xcs) InsertInPopulation(classifier *Classifier, ruleSet *list.List) {
 }
 
 func (xs *Xcs) ApplyCrossover(classifier1 *Classifier, classifier2 *Classifier) {
-	var x = rand.Intn(len(classifier1.GetCondition()))
-	var y = rand.Intn(len(classifier2.GetCondition()))
+	x := rand.Intn(len(classifier1.GetCondition()))
+	y := rand.Intn(len(classifier2.GetCondition()))
 	if x > y {
-		var z = x
+		z := x
 		x = y
 		y = z
 	}
-	var condition1 = classifier1.GetCondition()
-	var condition2 = classifier2.GetCondition()
+	condition1 := classifier1.GetCondition()
+	condition2 := classifier2.GetCondition()
 
 	for m := 0; m < len(classifier1.GetCondition()); m++ {
 		if x <= m && m < y {
-			var cc1 = condition1[m]
-			var cc2 = condition2[m]
+			cc1 := condition1[m]
+			cc2 := condition2[m]
 			condition1[m] = cc2
 			condition2[m] = cc1
 		}
 	}
 
-	var newFitness = (classifier1.GetFitness() + classifier2.GetFitness()) / 2
+	newFitness := (classifier1.GetFitness() + classifier2.GetFitness()) / 2
 	classifier1.SetFitness(newFitness)
 	classifier2.SetFitness(newFitness)
 
-	var newError = (classifier1.GetError() + classifier2.GetError()) / 2
+	newError := (classifier1.GetError() + classifier2.GetError()) / 2
 	classifier1.SetError(newError)
 	classifier2.SetError(newError)
 
-	var newPayoff = (classifier1.GetPayoff() + classifier2.GetPayoff()) / 2
+	newPayoff := (classifier1.GetPayoff() + classifier2.GetPayoff()) / 2
 	classifier1.SetPayoff(newPayoff)
 	classifier2.SetPayoff(newPayoff)
 }
@@ -296,23 +296,23 @@ func (x *Xcs) SelectOffspring(actionSet *list.List) *Classifier {
 	if actionSet.Len() == 1 {
 		return actionSet.Front().Value.(*Classifier)
 	}
-	var fitnessSum = 0.0
+	fitnessSum := 0.0
 	for e := actionSet.Front(); e != nil; e = e.Next() {
-		var cl = e.Value.(*Classifier)
+		cl := e.Value.(*Classifier)
 		fitnessSum = fitnessSum + cl.GetFitness()
 	}
-	var choicePoint = rand.Float64() * fitnessSum
+	choicePoint := rand.Float64() * fitnessSum
 	fitnessSum = 0.0
 	for e := actionSet.Front(); e != nil; e = e.Next() {
-		var cl = e.Value.(*Classifier)
+		cl := e.Value.(*Classifier)
 		fitnessSum = fitnessSum + cl.GetFitness()
 		if fitnessSum > choicePoint {
 			return cl
 		}
 	}
 
-	var randomIdx = rand.Intn(actionSet.Len())
-	var currentIdx = 0
+	randomIdx := rand.Intn(actionSet.Len())
+	currentIdx := 0
 	var cls *Classifier
 	for e := actionSet.Front(); e != nil; e = e.Next() {
 		if currentIdx == randomIdx {
@@ -322,31 +322,30 @@ func (x *Xcs) SelectOffspring(actionSet *list.List) *Classifier {
 		currentIdx++
 	}
 	if cls == nil {
-		fmt.Println("Error. cls == nil.")
-		os.Exit(-1)
+		log.Fatal("Error. cls == nil.")
 	}
 	return cls
 }
 
 func (x *Xcs) RunGeneticAlgorithm(actionSet *list.List, dataItem mli.DataItem, ruleSet *list.List, step int64) {
-	var numerositySum int32 = 0
-	var timeStampSum int64 = 0
+	numerositySum := int32(0)
+	timeStampSum := int64(0)
 	for e := actionSet.Front(); e != nil; e = e.Next() {
-		var cl = e.Value.(*Classifier)
+		cl := e.Value.(*Classifier)
 		numerositySum = numerositySum + cl.GetNumerosity()
 		timeStampSum = timeStampSum + (cl.GetTimeStamp() * int64(cl.GetNumerosity()))
 	}
 	if float64(step)-float64(timeStampSum)/float64(numerositySum) > float64(thetaGa) {
 
 		for e := actionSet.Front(); e != nil; e = e.Next() {
-			var cl = e.Value.(*Classifier)
+			cl := e.Value.(*Classifier)
 			cl.SetTimeStamp(step)
 		}
 
-		var parent1 = x.SelectOffspring(actionSet)
-		var parent2 = x.SelectOffspring(actionSet)
-		var child1 = parent1.GetOffspring()
-		var child2 = parent2.GetOffspring()
+		parent1 := x.SelectOffspring(actionSet)
+		parent2 := x.SelectOffspring(actionSet)
+		child1 := parent1.GetOffspring()
+		child2 := parent2.GetOffspring()
 
 		if rand.Float64() < chi {
 			x.ApplyCrossover(child1, child2)
@@ -374,20 +373,20 @@ func (x *Xcs) RunGeneticAlgorithm(actionSet *list.List, dataItem mli.DataItem, r
 }
 
 func (x *Xcs) CreatePredictionArray(matchSet *list.List) map[int]float64 {
-	var actionSet = make(map[int]bool, maxAction)
+	actionSet := make(map[int]bool, maxAction)
 	for e := matchSet.Front(); e != nil; e = e.Next() {
-		var cl = e.Value.(*Classifier)
+		cl := e.Value.(*Classifier)
 		actionSet[cl.GetAction()] = true
 	}
-	var pa = make(map[int]float64, len(actionSet))
-	var fsa = make(map[int]float64, len(actionSet))
+	pa := make(map[int]float64, len(actionSet))
+	fsa := make(map[int]float64, len(actionSet))
 	for k := range actionSet {
 		fsa[k] = 0.0
 	}
 	for e := matchSet.Front(); e != nil; e = e.Next() {
-		var cl = e.Value.(*Classifier)
-		var a = cl.GetAction()
-		var _, exists = pa[a]
+		cl := e.Value.(*Classifier)
+		a := cl.GetAction()
+		_, exists := pa[a]
 		if !exists {
 			pa[a] = cl.GetPayoff() * cl.GetFitness()
 		} else {
@@ -404,9 +403,9 @@ func (x *Xcs) CreatePredictionArray(matchSet *list.List) map[int]float64 {
 }
 
 func (x *Xcs) CreateActionSet(matchSet *list.List, action int) *list.List {
-	var actionSet = list.New()
+	actionSet := list.New()
 	for e := matchSet.Front(); e != nil; e = e.Next() {
-		var cl *Classifier = e.Value.(*Classifier)
+		cl := e.Value.(*Classifier)
 		if cl.GetAction() == action {
 			actionSet.PushBack(cl)
 		}
@@ -415,11 +414,11 @@ func (x *Xcs) CreateActionSet(matchSet *list.List, action int) *list.List {
 }
 
 func (x *Xcs) UpdateFitnessInSet(actionSet *list.List) {
-	var accuracySum float64 = 0.0
-	var k = make([]float64, actionSet.Len())
-	var i = 0
+	accuracySum := 0.0
+	k := make([]float64, actionSet.Len())
+	i := 0
 	for e := actionSet.Front(); e != nil; e = e.Next() {
-		var cl = e.Value.(*Classifier)
+		cl := e.Value.(*Classifier)
 		var val float64
 		if cl.GetError() < errorZero {
 			val = 1.0
@@ -432,35 +431,35 @@ func (x *Xcs) UpdateFitnessInSet(actionSet *list.List) {
 	}
 	i = 0
 	for e := actionSet.Front(); e != nil; e = e.Next() {
-		var cl = e.Value.(*Classifier)
-		var fitness = cl.GetFitness() + beta*(k[i]*float64(cl.GetNumerosity())/accuracySum-cl.GetFitness())
+		cl := e.Value.(*Classifier)
+		fitness := cl.GetFitness() + beta*(k[i]*float64(cl.GetNumerosity())/accuracySum-cl.GetFitness())
 		cl.SetFitness(fitness)
 		i++
 	}
 }
 
 func (x *Xcs) UpdateActionSet(capitalP float64, actionSet *list.List, ruleSet *list.List) {
-	var totAsNum = x.CountMicroClassifiers(actionSet)
+	totAsNum := x.CountMicroClassifiers(actionSet)
 	for e := actionSet.Front(); e != nil; e = e.Next() {
-		var cl = e.Value.(*Classifier)
+		cl := e.Value.(*Classifier)
 		cl.IncrementExperience()
-		var classifierExp = cl.GetExperience()
-		var inexperienced = float64(classifierExp) < 1/beta
-		var payoff = cl.GetPayoff()
+		classifierExp := cl.GetExperience()
+		inexperienced := float64(classifierExp) < 1/beta
+		payoff := cl.GetPayoff()
 		if inexperienced {
 			payoff += (capitalP - payoff) / float64(classifierExp)
 		} else {
 			payoff += beta * (capitalP - payoff)
 		}
 		cl.SetPayoff(payoff)
-		var predictionError = cl.GetPredictionError()
+		predictionError := cl.GetPredictionError()
 		if inexperienced {
 			predictionError += (math.Abs(capitalP-payoff) - predictionError) / float64(classifierExp)
 		} else {
 			predictionError += beta * (math.Abs(capitalP-payoff) - predictionError)
 		}
 		cl.SetPredictionError(predictionError)
-		var actionSetSize = cl.GetActionSetSize()
+		actionSetSize := cl.GetActionSetSize()
 		if inexperienced {
 			actionSetSize += (float64(totAsNum) - actionSetSize) / float64(classifierExp)
 		} else {
@@ -475,27 +474,27 @@ func (x *Xcs) UpdateActionSet(capitalP float64, actionSet *list.List, ruleSet *l
 }
 
 func (x *Xcs) Evaluate(problem mli.Problem, ruleSet *list.List, macroStep int) {
-	var numCorrect int = 0
-	var numIncorrect int = 0
+	numCorrect := 0
+	numIncorrect := 0
 	for j := 0; j < 100; j++ {
 		problem.Reset()
 		for problem.IsAtEndState() == false {
-			var dataItem = problem.ObtainInput()
-			var matchSet = x.ObtainMatchingClassifiers(ruleSet, dataItem)
+			dataItem := problem.ObtainInput()
+			matchSet := x.ObtainMatchingClassifiers(ruleSet, dataItem)
 			if matchSet.Len() == 0 {
 				numIncorrect += 1
 				break
 			}
-			var predictionArray = x.CreatePredictionArray(matchSet)
-			var bestAction = 0
-			var expP float64 = 0.0
+			predictionArray := x.CreatePredictionArray(matchSet)
+			bestAction := 0
+			expP := 0.0
 			for key, expPTmp := range predictionArray {
 				if expPTmp > expP {
 					expP = expPTmp
 					bestAction = key
 				}
 			}
-			var reward = problem.Effect(bestAction)
+			reward := problem.Effect(bestAction)
 			if problem.IsAtEndState() {
 				if reward == 1000 {
 					numCorrect += 1
@@ -506,8 +505,8 @@ func (x *Xcs) Evaluate(problem mli.Problem, ruleSet *list.List, macroStep int) {
 		}
 	}
 	if (numCorrect + numIncorrect) > 0 {
-		var propCorrect = (float64(numCorrect) / (float64(numCorrect) + float64(numIncorrect)))
-		fmt.Println("Post-cycle eval #", macroStep, ". Proportion correct: ", propCorrect)
+		propCorrect := (float64(numCorrect) / (float64(numCorrect) + float64(numIncorrect)))
+		fmt.Printf("Post-cycle eval #%v. Proportion correct: %v\n", macroStep, propCorrect)
 	}
 }
 
@@ -515,7 +514,7 @@ func (x *Xcs) OperateOn(problem mli.Problem) {
 
 	ruleSet := list.New()
 
-	var cumulativeMicroSteps int64 = 0
+	cumulativeMicroSteps := int64(0)
 	macroStep := 0
 	for i := 0; i < 80001; i++ {
 		microStep := 0
@@ -523,12 +522,12 @@ func (x *Xcs) OperateOn(problem mli.Problem) {
 		var lastActionSet *list.List
 		var lastReward int
 		for problem.IsAtEndState() == false {
-			var dataItem = problem.ObtainInput()
-			var matchSet = x.CreateMatchSet(ruleSet, dataItem, cumulativeMicroSteps)
-			var predictionArray = x.CreatePredictionArray(matchSet)
-			var paRandomIdx = rand.Intn(len(predictionArray))
-			var idx = 0
-			var bestAction = 0
+			dataItem := problem.ObtainInput()
+			matchSet := x.CreateMatchSet(ruleSet, dataItem, cumulativeMicroSteps)
+			predictionArray := x.CreatePredictionArray(matchSet)
+			paRandomIdx := rand.Intn(len(predictionArray))
+			idx := 0
+			bestAction := 0
 			for k := range predictionArray {
 				if idx == paRandomIdx {
 					bestAction = k
@@ -536,7 +535,7 @@ func (x *Xcs) OperateOn(problem mli.Problem) {
 				}
 				idx++
 			}
-			var expP float64 = 0.0
+			expP := 0.0
 			if rand.Float64() > pExplore {
 				for k, val := range predictionArray {
 					if val > expP {
@@ -547,17 +546,17 @@ func (x *Xcs) OperateOn(problem mli.Problem) {
 			} else {
 				expP = predictionArray[bestAction]
 			}
-			var actionSet = x.CreateActionSet(matchSet, bestAction)
-			var reward = problem.Effect(bestAction)
+			actionSet := x.CreateActionSet(matchSet, bestAction)
+			reward := problem.Effect(bestAction)
 			if lastActionSet != nil {
-				var capitalP = float64(lastReward) + gamma*expP
+				capitalP := float64(lastReward) + gamma*expP
 				x.UpdateActionSet(capitalP, lastActionSet, ruleSet)
 				if cumulativeMicroSteps%thetaGa == 0 {
 					x.RunGeneticAlgorithm(lastActionSet, dataItem, ruleSet, cumulativeMicroSteps)
 				}
 			}
 			if problem.IsAtEndState() {
-				var capitalP = float64(reward)
+				capitalP := float64(reward)
 				x.UpdateActionSet(capitalP, actionSet, ruleSet)
 				if cumulativeMicroSteps%thetaGa == 0 {
 					x.RunGeneticAlgorithm(actionSet, dataItem, ruleSet, cumulativeMicroSteps)
@@ -578,7 +577,7 @@ func (x *Xcs) OperateOn(problem mli.Problem) {
 	}
 
 	for e := ruleSet.Front(); e != nil; e = e.Next() {
-		var cl = e.Value.(*Classifier)
+		cl := e.Value.(*Classifier)
 		fmt.Println(cl.ToString())
 	}
 }

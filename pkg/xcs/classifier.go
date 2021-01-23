@@ -1,8 +1,3 @@
-// Package xcs provides an implementation of the eXtented Classifier
-// System algorithm as described within [Butz, M. V., & Wilson, S. W.
-// (2000, September). An algorithmic description of XCS. In
-// International Workshop on Learning Classifier Systems (pp. 253-272).
-// Springer, Berlin, Heidelberg].
 package xcs
 
 import (
@@ -31,12 +26,12 @@ type Classifier struct {
 }
 
 func (c *Classifier) ToString() string {
-	var condition = c.Condition
-	var builder = strings.Builder{}
+	condition := c.Condition
+	builder := strings.Builder{}
 	for i := 0; i < len(condition); i++ {
 		builder.WriteString(condition[i])
 	}
-	var condStr = builder.String()
+	condStr := builder.String()
 	return condStr + " --> " + strconv.Itoa(c.Action) +
 		" [PAY:" + strconv.FormatFloat(c.Payoff, 'f', -1, 32) +
 		"; ERR: " + strconv.FormatFloat(c.PredictionError, 'f', -1, 32) + "]"
@@ -44,12 +39,12 @@ func (c *Classifier) ToString() string {
 
 func (c *Classifier) UpdateCorrectSetSize(setSize int) float64 {
 	c.CorrectSets[len(c.CorrectSets)] = setSize
-	var tot = 0
+	tot := 0
 	for i := 0; i < len(c.CorrectSets); i++ {
-		var ss = c.CorrectSets[i]
+		ss := c.CorrectSets[i]
 		tot += ss
 	}
-	var correctSetSize float64 = float64(tot) / float64(len(c.CorrectSets))
+	correctSetSize := float64(tot) / float64(len(c.CorrectSets))
 	return correctSetSize
 }
 
@@ -86,8 +81,8 @@ func (c *Classifier) GetNumerosity() int32 {
 }
 
 func (c *Classifier) GetDeletionVote(averageFitnessOfPop float64) float64 {
-	var f64Numerosity = float64(c.Numerosity)
-	var deletionVote float64 = float64(c.ActionSetSize) * f64Numerosity
+	f64Numerosity := float64(c.Numerosity)
+	deletionVote := float64(c.ActionSetSize) * f64Numerosity
 	if c.Exp > c.ThetaDel && c.Fitness/f64Numerosity < c.Delta*averageFitnessOfPop {
 		deletionVote = (deletionVote * averageFitnessOfPop) / (c.Fitness / f64Numerosity)
 	}
@@ -134,8 +129,8 @@ func (c *Classifier) DoesMatch(classifier *Classifier) bool {
 	if c.GetAction() != classifier.GetAction() {
 		return false
 	}
-	var condition1 = c.GetCondition()
-	var condition2 = classifier.GetCondition()
+	condition1 := c.GetCondition()
+	condition2 := classifier.GetCondition()
 	for i := 0; i < len(condition1); i++ {
 		if condition1[i] != condition2[i] {
 			return false
@@ -148,8 +143,8 @@ func (c *Classifier) IsMoreGeneralThan(classifier *Classifier) bool {
 	if c.GetHashCount() <= classifier.GetHashCount() {
 		return false
 	}
-	var condition1 = c.GetCondition()
-	var condition2 = classifier.GetCondition()
+	condition1 := c.GetCondition()
+	condition2 := classifier.GetCondition()
 	for i := 0; i < len(condition1); i++ {
 		if condition1[i] != "#" && condition1[i] != condition2[i] {
 			return false
@@ -163,7 +158,7 @@ func (c *Classifier) GetError() float64 {
 }
 
 func (c *Classifier) GetHashCount() int {
-	var hashCount = 0
+	hashCount := 0
 	for _, x := range c.Condition {
 		if x == "#" {
 			hashCount += 1
@@ -201,11 +196,11 @@ func (c *Classifier) SetTimeStamp(timeStamp int64) {
 }
 
 func (c *Classifier) GetOffspring() *Classifier {
-	var condition = make([]string, len(c.Condition))
+	condition := make([]string, len(c.Condition))
 	for i, a := range c.Condition {
 		condition[i] = a
 	}
-	var cl = Classifier{condition, c.Action, 0.0, c.InitialError, c.InitialError, c.FitnessI, c.FitnessI, 1, 0, 0, c.ThetaSub, c.TimeStamp, c.V, make([]int, 80000), c.ThetaDel, c.Delta, c.ErrorZero}
+	cl := Classifier{condition, c.Action, 0.0, c.InitialError, c.InitialError, c.FitnessI, c.FitnessI, 1, 0, 0, c.ThetaSub, c.TimeStamp, c.V, make([]int, 80000), c.ThetaDel, c.Delta, c.ErrorZero}
 	cl.SetFitness(c.Fitness)
 	cl.SetPayoff(c.Payoff)
 	cl.SetPredictionError(c.PredictionError)
