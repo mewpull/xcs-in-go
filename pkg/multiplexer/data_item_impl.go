@@ -3,35 +3,34 @@
 package multiplexer
 
 import (
-    "strings"
-    "strconv"
+	"strconv"
+	"strings"
 )
 
 type DataItemImpl struct {
-    Inputs []int
-    Answer int
+	Inputs []int
+	Answer int
 }
 
 func (d *DataItemImpl) ToString() string {
 
-
-    var inputs = d.Inputs
-    var builder = strings.Builder{}
-    for i := 0; i < len(inputs); i++ {
-        builder.WriteString(strconv.Itoa(inputs[i]))
-    }
-    var inpStr = builder.String()
-    return inpStr + " --> " + strconv.Itoa(d.Answer)
+	var inputs = d.Inputs
+	var builder = strings.Builder{}
+	for i := 0; i < len(inputs); i++ {
+		builder.WriteString(strconv.Itoa(inputs[i]))
+	}
+	var inpStr = builder.String()
+	return inpStr + " --> " + strconv.Itoa(d.Answer)
 }
 
 func (d *DataItemImpl) GetInputs() []int {
-    return d.Inputs
+	return d.Inputs
 }
 
 func (d *DataItemImpl) GetAnswer() int {
-    return d.Answer
+	return d.Answer
 }
 
 func (d *DataItemImpl) GetAttribute(n int) int {
-    return d.Inputs[n]
+	return d.Inputs[n]
 }
