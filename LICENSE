@@ -1,6 +1,6 @@
-The MIT License (MIT)
+The MIT License (MIT) [modified]
 
-Copyright (c) Matthew R. Karlsen 2020
+This implementation is (c) Matthew R. Karlsen, and other contributors (2020)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -11,6 +11,16 @@ furnished to do so, subject to the following conditions:
 
 The above copyright notice and this permission notice shall be included in
 all copies or substantial portions of the Software.
+
+If you use the algorithm, you should cite and acknowledge the original
+'algorithmic description' paper. This implementation of the XCS (eXtended
+Classifier System) algorithm is based on [Butz, M. V., & Wilson, S. W. (2000,
+September). An algorithmic description of XCS. In International Workshop on
+Learning Classifier Systems (pp. 253-272). Springer, Berlin, Heidelberg].
+
+Permission to use the algorithm description within the above paper as a
+base for the present work was sought and received from Springer (personal
+communication, 2020-07-07).
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,

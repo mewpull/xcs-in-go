@@ -76,14 +76,13 @@ Any amendments or corrections to the algorithm are welcome. Please
 remember to update the contributors section in the README.md
 with your name as part of your first commit to the project.
 
-Any contributions submitted will be tri-licensed, under the supplied
-CC0, MIT and Apache 2.0 licenses.
+Any contributions submitted will be licensed under the supplied
+license in the LICENSE file.
 
-Should you be unable or unwilling to comply with the tri-licensing
-condition above, we are unable to accept your code for the project.
-This particularly applies to code that has previously been licensed
-with an incompatible license (just the Apache 2.0 license, just the MIT
-license, any GPL license, etc).
+Should you be unable or unwilling to comply with the LICENSE file,
+we are unable to accept your code for the project. This particularly
+applies to code that has previously been licensed with an incompatible
+license (e.g. the GPL license).
 
 Please do not submit code that has already been licensed with an
 incompatible license.
@@ -96,27 +95,15 @@ documents.
 
 ## Licensing ##
 
-Please read this file fully before copying or using the code anywhere.
-Questions can be raised through creation of an 'issue' on GitHub.
+If you use this algorithm, you should cite and acknowledge the original
+'algorithmic description' paper.
 
-This *implementation* of the XCS (eXtended Classifier System) algorithm
-is based on [Butz, M. V., & Wilson, S. W. (2000, September). An
-algorithmic description of XCS. In International Workshop on Learning
-Classifier Systems (pp. 253-272). Springer, Berlin, Heidelberg].
+This implementation of the XCS (eXtended Classifier System) algorithm is
+based on [Butz, M. V., & Wilson, S. W. (2000, September). An algorithmic
+description of XCS. In International Workshop on Learning Classifier
+Systems (pp. 253-272). Springer, Berlin, Heidelberg].
 
-Permission to use the algorithm description within the above paper as a
-base for the present work was sought and received from Springer (personal
-communication, 2020-07-07).
-
-The implementation is tri-licensed, under the CC0, MIT and Apache 2.0 licenses.
-
-This means that you can select and use one of these licenses, i.e. CC0
-or MIT or Apache 2.0. You do not have to use all three licenses at
-once.
-
-Clear attribution for the *implementation* is strongly preferred
-(but not enforced by CC0). *If you use the algorithm, you should cite
-and acknowledge the original 'algorithmic description' paper.*
+Please see the LICENSE file for the license.
 
 This project uses additional external packages. The code of these
 external packages is clearly not covered by the above license(s). Each
